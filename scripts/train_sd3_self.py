@@ -231,7 +231,7 @@ def sds_self_confidence_scalar(
     sds_per_step = torch.zeros(B, T_used, device=device, dtype=torch.float32)
 
     # CFG?
-    use_cfg = bool(getattr(config.train, "cfg", False)) and (float(config.sample.guidance_scale) > 1.0)
+    use_cfg = False# bool(getattr(config.train, "cfg", False)) and (float(config.sample.guidance_scale) > 1.0)
     gs = float(config.sample.guidance_scale) if use_cfg else 1.0
 
     # Prebuild repeated embeds for probes
@@ -242,7 +242,7 @@ def sds_self_confidence_scalar(
 
     with torch.no_grad():
         with autocast_ctx():
-            for j in range(T_used // 2, T_used, step_stride):
+            for j in range(int (T_used * 0.25), T_used, step_stride):
                 t_idx = timesteps[:, j]                       # [B]
                 # normalize to [0,1] (SD3 scheduler uses 0..999 or similar)
                 t = t_idx.float() / 1000.0
@@ -861,7 +861,7 @@ def main(_):
                     embeds = sample["prompt_embeds"]
                     pooled_embeds = sample["pooled_prompt_embeds"]
 
-                train_timesteps = [step_index for step_index in range(num_train_timesteps // 2, num_train_timesteps)]
+                train_timesteps = [step_index for step_index in range(int(num_train_timesteps * 0.25), num_train_timesteps)]
                 for j in tqdm(
                     train_timesteps,
                     desc="Timestep",

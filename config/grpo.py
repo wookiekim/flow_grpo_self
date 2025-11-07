@@ -369,7 +369,7 @@ def general_ocr_sd3_8gpu():
 
     # sd3.5 medium
     config.pretrained.model = "stabilityai/stable-diffusion-3.5-medium"
-    config.sample.num_steps = 10
+    config.sample.num_steps = 20
     config.sample.eval_num_steps = 40
     config.sample.guidance_scale = 4.5
 
@@ -393,7 +393,7 @@ def general_ocr_sd3_8gpu():
     # A large num_epochs is intentionally set here. Training will be manually stopped once sufficient
     config.save_freq = 60 # epoch
     config.eval_freq = 60
-    config.save_dir = 'logs/ocr/sd3.5-M_self_online'
+    config.save_dir = 'logs/ocr/sd3.5-M_self_online_noCFGforSDS_0.75steps'
     config.reward_fn = {
         "ocr": 1.0,
     }
