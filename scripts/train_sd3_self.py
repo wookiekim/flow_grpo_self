@@ -242,7 +242,7 @@ def sds_self_confidence_scalar(
 
     with torch.no_grad():
         with autocast_ctx():
-            for j in range(int (T_used * 0.25), T_used, step_stride):
+            for j in range(int (T_used * 0.5), T_used, step_stride):
                 t_idx = timesteps[:, j]                       # [B]
                 # normalize to [0,1] (SD3 scheduler uses 0..999 or similar)
                 t = t_idx.float() / 1000.0
@@ -861,7 +861,7 @@ def main(_):
                     embeds = sample["prompt_embeds"]
                     pooled_embeds = sample["pooled_prompt_embeds"]
 
-                train_timesteps = [step_index for step_index in range(int(num_train_timesteps * 0.25), num_train_timesteps)]
+                train_timesteps = [step_index for step_index in range(int(num_train_timesteps * 0.5), num_train_timesteps)]
                 for j in tqdm(
                     train_timesteps,
                     desc="Timestep",
