@@ -216,7 +216,7 @@ def sds_self_confidence_scalar(
     Returns: sds_scalar [B] and (optionally) per-step scores [B,T_used] for debugging.
     """
     B, C, H, W = x0.shape
-    K = getattr(config.train, "sds", {}).get("k", 4)
+    K = getattr(config.train, "sds", {}).get("k", 8)
     step_stride = getattr(config.train, "sds", {}).get("use_step_stride", 1)
     scale = getattr(config.train, "sds", {}).get("scale", 1.0)
 
@@ -249,7 +249,9 @@ def sds_self_confidence_scalar(
                 t_expanded = t.view(B, 1, 1, 1)               # [B,1,1,1]
 
                 # K probes
-                eps = torch.randn(K, B, C, H, W, device=device, dtype=x0.dtype)
+                eps = torch.randn(K // 2, B, C, H, W, device=device, dtype=x0.dtype)
+                eps = torch.cat((eps, -eps), dim=0)
+                
                 # simple FM blend: x_t = (1-t) * x0 + t * eps   (same as in your previous SDS probe)
                 xt = (1.0 - t_expanded) * x0.unsqueeze(0) + t_expanded * eps  # [K,B,C,H,W]
                 xt_flat = xt.reshape(K * B, C, H, W)
